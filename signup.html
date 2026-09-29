@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign Up — LibShare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="wrap header-inner">
+      <div class="logo">Lib<span>Share</span></div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <button class="theme-btn" id="themeToggle">Light mode</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="auth-container">
+    <div class="auth-grid">
+      <div class="auth-card">
+        <h2 class="card-title">Sign Up</h2>
+        <form class="auth-form" id="signupForm">
+          <label class="form-group">
+            <span class="label-text">Full name</span>
+            <input type="text" class="form-input" required placeholder="John Doe">
+          </label>
+          <label class="form-group">
+            <span class="label-text">Email</span>
+            <input type="email" class="form-input" required placeholder="you@example.com">
+          </label>
+          <label class="form-group">
+            <span class="label-text">Password</span>
+            <input type="password" id="signupPass" class="form-input" required placeholder="••••••••">
+          </label>
+          <label class="form-group">
+            <span class="label-text">Confirm password</span>
+            <input type="password" id="signupConfirm" class="form-input" required placeholder="••••••••">
+          </label>
+
+          <p class="auth-error" id="signupError">Passwords do not match.</p>
+
+          <button type="submit" class="auth-btn">Create account</button>
+          <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Signup
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pass = document.getElementById('signupPass').value;
+      const confirm = document.getElementById('signupConfirm').value;
+      const error = document.getElementById('signupError');
+      if (pass !== confirm) {
+        error.style.display = 'block';
+        return;
+      }
+      error.style.display = 'none';
+      console.log('signup submitted');
+    });
+
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme') || 'dark';
+    root.setAttribute('data-theme', saved);
+    themeBtn.textContent = saved === 'dark' ? 'Light mode' : 'Dark mode';
+    themeBtn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeBtn.textContent = isDark ? 'Dark mode' : 'Light mode';
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    });
+  </script>
+
+</body>
+</html>

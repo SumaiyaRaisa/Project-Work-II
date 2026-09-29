@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LibShare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="wrap header-inner">
+      <div class="logo">Lib<span>Share</span></div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="browse.html">Browse</a>
+        <a href="login.html">Login</a>
+        <button class="theme-btn" id="themeToggle">Dark mode</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <h1>Lend it. Borrow it.<br>Keep reading.</h1>
+      <p class="sub">Lend, borrow, buy, and sell books with readers nearby.</p>
+      <form class="search">
+        <input type="text" placeholder="Search by title or author">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- TWO OPTIONS -->
+  <section class="section">
+    <div class="wrap paths">
+      <div class="path">
+        <h2>Lend &amp; borrow</h2>
+        <p>Share a book for a few weeks, or borrow one you need.</p>
+        <a class="btn solid" href="#">Borrow a book</a>
+        <a class="btn" href="#">Lend a book</a>
+      </div>
+      <div class="path">
+        <h2>Buy &amp; sell</h2>
+        <p>Sell books you have finished, or buy used copies.</p>
+        <a class="btn solid" href="#">Buy a book</a>
+        <a class="btn" href="#">Sell a book</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKS (fake data for now, backend will replace this later) -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="section-title">Featured books</h2>
+      <div class="grid" id="bookGrid">
+        <div class="card">
+          <div class="cover">Cover</div>
+          <h3>Book title</h3>
+          <p class="author">Author name</p>
+          <span class="tag">For lending</span>
+        </div>
+        <div class="card">
+          <div class="cover">Cover</div>
+          <h3>Book title</h3>
+          <p class="author">Author name</p>
+          <span class="tag">For sale</span>
+        </div>
+        <div class="card">
+          <div class="cover">Cover</div>
+          <h3>Book title</h3>
+          <p class="author">Author name</p>
+          <span class="tag">For lending</span>
+        </div>
+        <div class="card">
+          <div class="cover">Cover</div>
+          <h3>Book title</h3>
+          <p class="author">Author name</p>
+          <span class="tag">For sale</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">LibShare, a student project</div>
+  </footer>
+
+  <script>
+  const btn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  // load saved choice
+  if (localStorage.getItem('theme') === 'dark') {
+    root.setAttribute('data-theme', 'dark');
+    btn.textContent = 'Light mode';
+  }
+
+  btn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    btn.textContent = isDark ? 'Dark mode' : 'Light mode';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
