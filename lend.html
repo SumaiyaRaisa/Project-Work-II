@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lend a Book — LibShare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/lend.css">
+</head>
+<body>
+
+  <header>
+    <div class="wrap header-inner">
+      <div class="logo">Lib<span>Share</span></div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="browse.html">Browse</a>
+        <a href="login.html">Login</a>
+        <button class="theme-btn" id="themeToggle">Dark mode</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="lend-card">
+        <h1>Lend a Book</h1>
+
+        <form id="lendForm" autocomplete="off">
+          <label>
+            Book title
+            <input type="text" id="bookTitle" required>
+          </label>
+
+          <label>
+            Author
+            <input type="text" id="bookAuthor" required>
+          </label>
+
+          <label>
+            Category
+            <input type="text" id="bookCategory" placeholder="e.g. Fiction, Academic, Poetry" required>
+          </label>
+
+          <label>
+            Condition
+            <select id="bookCondition">
+              <option>New</option>
+              <option selected>Good</option>
+              <option>Fair</option>
+              <option>Worn</option>
+            </select>
+          </label>
+
+          <label>
+            Description
+            <textarea id="bookDescription" rows="4" placeholder="A short note about the book, edition, or its condition"></textarea>
+          </label>
+
+          <label>
+            Book cover
+            <input type="file" id="bookCover" accept="image/*">
+          </label>
+
+          <label>
+            How long can it be borrowed?
+            <select id="bookDuration">
+              <option>1 week</option>
+              <option selected>2 weeks</option>
+              <option>3 weeks</option>
+              <option>1 month</option>
+            </select>
+          </label>
+
+          <p class="form-error" id="lendError">Please fill in the required fields.</p>
+
+          <div class="lend-actions">
+            <button type="submit">List Book</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">LibShare, a student project</div>
+  </footer>
+
+  <script>
+    document.getElementById('lendForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const book = {
+        title: document.getElementById('bookTitle').value.trim(),
+        author: document.getElementById('bookAuthor').value.trim(),
+        category: document.getElementById('bookCategory').value.trim(),
+        condition: document.getElementById('bookCondition').value,
+        description: document.getElementById('bookDescription').value.trim(),
+        duration: document.getElementById('bookDuration').value,
+        type: 'lend'
+        // book cover file is sent separately as FormData when connected to the backend
+      };
+
+      const error = document.getElementById('lendError');
+      if (!book.title || !book.author || !book.category) {
+        error.style.display = 'block';
+        return;
+      }
+      error.style.display = 'none';
+
+      // fetch('/api/books', { method: 'POST', body: ... }) goes here later
+      console.log('book listed for lending:', book);
+    });
+
+    // Theme toggle — same as other pages
+    const themeBtn = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    if (localStorage.getItem('theme') === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+      themeBtn.textContent = 'Light mode';
+    }
+    themeBtn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeBtn.textContent = isDark ? 'Dark mode' : 'Light mode';
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    });
+  </script>
+
+</body>
+</html>
