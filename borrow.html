@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Borrow a Book — LibShare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/borrow.css">
+</head>
+<body>
+
+  <header>
+    <div class="wrap header-inner">
+      <div class="logo">Book<span>Alley</span></div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="browse.html">Browse</a>
+        <a href="login.html">Login</a>
+        <button class="theme-btn" id="themeToggle">Dark mode</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="wrap">
+      <h1 class="page-title">Books available for borrowing</h1>
+
+      <div class="toolbar">
+        <input type="text" id="search" placeholder="Search by title, author or category">
+        <select id="condition">
+          <option value="">Any condition</option>
+          <option>New</option>
+          <option>Good</option>
+          <option>Fair</option>
+          <option>Worn</option>
+        </select>
+      </div>
+
+      <div class="book-grid" id="grid"></div>
+      <p class="empty" id="empty" style="display:none">No books match your search.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">BookAlley, a student project</div>
+  </footer>
+
+  <script>
+    // Sample data. Delete this when the backend is ready.
+    const sampleBooks = [
+      { id: 1, title: 'The Alchemist', author: 'Paulo Coelho', category: 'Fiction', condition: 'Good', duration: '2 weeks', cover: '' },
+      { id: 2, title: 'Gitanjali', author: 'Rabindranath Tagore', category: 'Poetry', condition: 'Fair', duration: '3 weeks', cover: '' },
+      { id: 3, title: 'Introduction to Algorithms', author: 'Cormen et al.', category: 'Academic', condition: 'Good', duration: '1 month', cover: '' }
+    ];
+
+    async function loadBooks() {
+      // Backend: replace the line below with
+      // const res = await fetch('/api/books?type=lend&status=available'); return res.json();
+      return sampleBooks;
+    }
+
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const search = document.getElementById('search');
+    const condition = document.getElementById('condition');
+    let books = [];
+
+    function render() {
+      const q = search.value.trim().toLowerCase();
+      const c = condition.value;
+      const list = books.filter(b =>
+        (!c || b.condition === c) &&
+        [b.title, b.author, b.category].join(' ').toLowerCase().includes(q)
+      );
+
+      grid.innerHTML = list.map(b => `
+        <article class="book-card">
+          <div class="cover">${b.cover ? `<img src="${esc(b.cover)}" alt="">` : `<span>${esc(b.title.charAt(0))}</span>`}</div>
+          <h3>${esc(b.title)}</h3>
+          <p class="author">${esc(b.author)}</p>
+          <div class="meta">
+            <span class="badge">${esc(b.condition)}</span>
+            <span>${esc(b.duration)}</span>
+          </div>
+          <a class="btn" href="book.html?id=${b.id}">View book</a>
+        </article>`).join('');
+
+      empty.style.display = list.length ? 'none' : 'block';
+    }
+
+    search.addEventListener('input', render);
+    condition.addEventListener('change', render);
+    loadBooks().then(data => { books = data; render(); });
+
+    // Theme toggle — same as other pages
+    const themeBtn = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    if (localStorage.getItem('theme') === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+      themeBtn.textContent = 'Light mode';
+    }
+    themeBtn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeBtn.textContent = isDark ? 'Dark mode' : 'Light mode';
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    });
+  </script>
+
+</body>
+</html>
