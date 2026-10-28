@@ -30,17 +30,7 @@ body {
   line-height: 1.6;
 }
 
-h1, h2, h3 { 
-  font-family:'Pacifico', cursive;
-   
- }
-
- .logo {
-  font-family:'Pacifico', cursive;
-   font-size: 10rem; 
-   letter-spacing: 4px;
-
- }
+h1, h2, h3, .logo { font-family: 'Playfair Display', serif; }
 
 .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
 .section { padding: 40px 0; }
@@ -63,7 +53,7 @@ nav a:hover { color: var(--accent); }
 /* ---------- HERO ---------- */
 .hero { text-align: center; padding: 70px 0 40px; }
 .hero h1 { font-size: 42px; margin: 0 0 12px; line-height: 1.2; }
-.sub { color: var(--text-soft);  margin-bottom: 28px; }
+.sub { color: var(--text-soft); font-style: italic; margin-bottom: 28px; }
 
 .search { display: flex; max-width: 460px; margin: 0 auto; border: 1px solid var(--accent); }
 .search input {
@@ -72,31 +62,16 @@ nav a:hover { color: var(--accent); }
 }
 .search button {
   border: none; background: var(--accent); color: var(--bg);
-  padding: 0 22px; font-family: inherit; font-size: 15px; cursor: pointer;transition: 0.25s;
-  transition: 0.25s;
-
+  padding: 0 22px; font-family: inherit; font-size: 15px; cursor: pointer;
 }
-.search button:hover { filter: brightness(1.2); }
 
 /* ---------- BUTTONS ---------- */
 .btn {
   display: inline-block; padding: 9px 20px; margin: 4px;
   border: 1px solid var(--accent); color: var(--text);
   text-decoration: none; font-size: 15px;
-  transition: 0.25s;  
 }
-
-.btn:hover {                      /* outline buttons: fill with accent */
-  background: var(--accent);
-  color: var(--bg);
-  transform: translateY(-2px);
-}
-.btn.solid:hover {                /* solid buttons: brighten */
-  filter: brightness(1.2);
-  transform: translateY(-2px);
-}
-
-/* .btn.solid { background: var(--accent); color: var(--bg); } */
+.btn.solid { background: var(--accent); color: var(--bg); }
 
 /* ---------- TWO OPTIONS ---------- */
 .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
