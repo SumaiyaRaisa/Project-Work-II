@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="css/sell.css">
 </head>
 <body>
-
   <header>
     <div class="wrap header-inner">
       <div class="logo">Book<span>Alley</span></div>
@@ -26,106 +25,69 @@
     <div class="wrap">
       <div class="sell-card">
         <h1>Sell a Book</h1>
-
         <form id="sellForm" autocomplete="off">
-          <label>
-            Book title
-            <input type="text" id="bookTitle" required>
-          </label>
-
-          <label>
-            Author
-            <input type="text" id="bookAuthor" required>
-          </label>
-
-          <label>
-            Category
+          <label>Book title <input type="text" id="bookTitle" required></label>
+          <label>Author <input type="text" id="bookAuthor" required></label>
+          <label>Category
             <input type="text" id="bookCategory" placeholder="e.g. Fiction, Academic, Poetry" required>
           </label>
-
-          <label>
-            Condition
+          <label>Condition
             <select id="bookCondition">
-              <option>New</option>
-              <option selected>Good</option>
-              <option>Fair</option>
-              <option>Worn</option>
+              <option>New</option><option selected>Good</option><option>Fair</option><option>Worn</option>
             </select>
           </label>
-
-          <label>
-            Description
+          <label>Description
             <textarea id="bookDescription" rows="4" placeholder="A short note about the book, edition, or its condition"></textarea>
           </label>
-
-          <label>
-            Book cover
-            <input type="file" id="bookCover" accept="image/*">
-          </label>
-
-          <label>
-            Price
+          <!-- NOTE: the backend does not store cover images yet, so this file is not sent -->
+          <label>Book cover <input type="file" id="bookCover" accept="image/*"></label>
+          <label>Price
             <div class="price-field">
               <span class="price-symbol">৳</span>
-              <input type="number" id="bookPrice" min="0" step="1" inputmode="numeric" placeholder="0" required>
+              <!-- CHANGED: min="1" (was 0) because the backend rejects a book for sale with price 0 -->
+              <input type="number" id="bookPrice" min="1" step="1" inputmode="numeric" placeholder="0" required>
             </div>
           </label>
 
           <p class="form-error" id="sellError">Please fill in the required fields.</p>
-
-          <div class="sell-actions">
-            <button type="submit">List for Sale</button>
-          </div>
+          <div class="sell-actions"><button type="submit">List for Sale</button></div>
         </form>
       </div>
     </div>
   </section>
 
-  <footer>
-    <div class="wrap">BookAlley, a student project</div>
-  </footer>
+  <footer><div class="wrap">BookAlley, a student project</div></footer>
 
+  <!-- CHANGED: shared helpers; theme code removed from this page -->
+  <script src="js/app.js"></script>
   <script>
-    document.getElementById('sellForm').addEventListener('submit', (e) => {
+    requireLogin(); // CHANGED: selling needs a login
+
+    // CHANGED: async
+    document.getElementById('sellForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const book = {
-        title: document.getElementById('bookTitle').value.trim(),
-        author: document.getElementById('bookAuthor').value.trim(),
-        category: document.getElementById('bookCategory').value.trim(),
-        condition: document.getElementById('bookCondition').value,
-        description: document.getElementById('bookDescription').value.trim(),
-        price: Number(document.getElementById('bookPrice').value),
-        type: 'sell'
-        // book cover file is sent separately as FormData when connected to the backend
-      };
-
       const error = document.getElementById('sellError');
-      const priceValue = document.getElementById('bookPrice').value;
-      if (!book.title || !book.author || !book.category || priceValue === '' || book.price < 0) {
-        error.style.display = 'block';
-        return;
-      }
+      const title = document.getElementById('bookTitle').value.trim();
+      const author = document.getElementById('bookAuthor').value.trim();
+      const category = document.getElementById('bookCategory').value.trim();
+      const price = Number(document.getElementById('bookPrice').value);
+      if (!title || !author || !category || !(price > 0)) { error.textContent = 'Please fill in the required fields (price must be above 0).'; error.style.display = 'block'; return; }
       error.style.display = 'none';
 
-      // fetch('/api/books', { method: 'POST', body: ... }) goes here later
-      console.log('book listed for sale:', book);
-    });
+      // CHANGED: condition is added to the description (backend has no condition column)
+      const note = document.getElementById('bookDescription').value.trim();
+      const description = note + (note ? '\n' : '') + 'Condition: ' + document.getElementById('bookCondition').value + '.';
 
-    // Theme toggle — same as other pages
-    const themeBtn = document.getElementById('themeToggle');
-    const root = document.documentElement;
-    if (localStorage.getItem('theme') === 'dark') {
-      root.setAttribute('data-theme', 'dark');
-      themeBtn.textContent = 'Light mode';
-    }
-    themeBtn.addEventListener('click', () => {
-      const isDark = root.getAttribute('data-theme') === 'dark';
-      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
-      themeBtn.textContent = isDark ? 'Dark mode' : 'Light mode';
-      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+      // CHANGED: replaced console.log with POST /books.
+      // category -> genre, type:'sell' -> for_sale:true / for_lend:false
+      const r = await api('/books', 'POST', {
+        title, author, genre: category, description,
+        for_lend: false, for_sale: true, price
+      });
+      if (r.status === 401) { location.href = 'login.html'; return; }
+      if (!r.ok) { error.textContent = (r.data && r.data.error) || 'Could not list the book.'; error.style.display = 'block'; return; }
+      location.href = 'book.html?id=' + r.data.id;
     });
   </script>
-
 </body>
 </html>
