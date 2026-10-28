@@ -1,5 +1,4 @@
 # BookAlley
-https://sumaiyaraisa.github.io/Project-Work-II/
 
 BookAlley is a web-based book sharing platform developed as a project for the CSE Web Technologies course. The platform is designed to make it easier for users to lend, borrow, sell, and buy books in one place.
 
