@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="css/borrow.css">
 </head>
 <body>
-
   <header>
     <div class="wrap header-inner">
       <div class="logo">Book<span>Alley</span></div>
@@ -25,89 +24,54 @@
   <section class="section">
     <div class="wrap">
       <h1 class="page-title">Books available for borrowing</h1>
-
       <div class="toolbar">
+        <!-- CHANGED: the "condition" dropdown was removed (the backend has no condition field) -->
         <input type="text" id="search" placeholder="Search by title, author or category">
-        <select id="condition">
-          <option value="">Any condition</option>
-          <option>New</option>
-          <option>Good</option>
-          <option>Fair</option>
-          <option>Worn</option>
-        </select>
       </div>
-
       <div class="book-grid" id="grid"></div>
       <p class="empty" id="empty" style="display:none">No books match your search.</p>
     </div>
   </section>
 
-  <footer>
-    <div class="wrap">BookAlley, a student project</div>
-  </footer>
+  <footer><div class="wrap">BookAlley, a student project</div></footer>
 
+  <!-- CHANGED: shared helpers (also gives us esc()); theme code and the sample data were removed -->
+  <script src="js/app.js"></script>
   <script>
-    // Sample data. Delete this when the backend is ready.
-    const sampleBooks = [
-      { id: 1, title: 'The Alchemist', author: 'Paulo Coelho', category: 'Fiction', condition: 'Good', duration: '2 weeks', cover: '' },
-      { id: 2, title: 'Gitanjali', author: 'Rabindranath Tagore', category: 'Poetry', condition: 'Fair', duration: '3 weeks', cover: '' },
-      { id: 3, title: 'Introduction to Algorithms', author: 'Cormen et al.', category: 'Academic', condition: 'Good', duration: '1 month', cover: '' }
-    ];
-
-    async function loadBooks() {
-      // Backend: replace the line below with
-      // const res = await fetch('/api/books?type=lend&status=available'); return res.json();
-      return sampleBooks;
-    }
-
-    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const grid = document.getElementById('grid');
     const empty = document.getElementById('empty');
     const search = document.getElementById('search');
-    const condition = document.getElementById('condition');
     let books = [];
+
+    // CHANGED: loads real books from the backend instead of sampleBooks.
+    // Backend URL is /books?type=lend&available=true (not /api/books?...&status=available)
+    async function loadBooks() {
+      const r = await api('/books?type=lend&available=true');
+      return r.ok ? r.data : [];
+    }
 
     function render() {
       const q = search.value.trim().toLowerCase();
-      const c = condition.value;
-      const list = books.filter(b =>
-        (!c || b.condition === c) &&
-        [b.title, b.author, b.category].join(' ').toLowerCase().includes(q)
-      );
+      // CHANGED: b.category -> b.genre (the backend calls it genre)
+      const list = books.filter(b => [b.title, b.author, b.genre].join(' ').toLowerCase().includes(q));
 
       grid.innerHTML = list.map(b => `
         <article class="book-card">
-          <div class="cover">${b.cover ? `<img src="${esc(b.cover)}" alt="">` : `<span>${esc(b.title.charAt(0))}</span>`}</div>
+          <div class="cover"><span>${esc(b.title.charAt(0))}</span></div>
           <h3>${esc(b.title)}</h3>
           <p class="author">${esc(b.author)}</p>
           <div class="meta">
-            <span class="badge">${esc(b.condition)}</span>
-            <span>${esc(b.duration)}</span>
+            <!-- CHANGED: shows genre (was condition) and "Free to borrow" (was duration) -->
+            <span class="badge">${esc(b.genre || 'Book')}</span>
+            <span>Free to borrow</span>
           </div>
           <a class="btn" href="book.html?id=${b.id}">View book</a>
         </article>`).join('');
-
       empty.style.display = list.length ? 'none' : 'block';
     }
 
     search.addEventListener('input', render);
-    condition.addEventListener('change', render);
     loadBooks().then(data => { books = data; render(); });
-
-    // Theme toggle — same as other pages
-    const themeBtn = document.getElementById('themeToggle');
-    const root = document.documentElement;
-    if (localStorage.getItem('theme') === 'dark') {
-      root.setAttribute('data-theme', 'dark');
-      themeBtn.textContent = 'Light mode';
-    }
-    themeBtn.addEventListener('click', () => {
-      const isDark = root.getAttribute('data-theme') === 'dark';
-      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
-      themeBtn.textContent = isDark ? 'Dark mode' : 'Light mode';
-      localStorage.setItem('theme', isDark ? 'light' : 'dark');
-    });
   </script>
-
 </body>
 </html>
