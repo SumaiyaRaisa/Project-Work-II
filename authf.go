@@ -49,7 +49,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request){
     	sendError(w, http.StatusBadRequest, "email looks invalid")
     	return
 	}
-	if len(input.Password) < 6 {
+	if len(input.Password) < 8 {
 		sendError(w, http.StatusBadRequest, "password must be at least 6 characters")
 		return
 	}
