@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Messages · LibShare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+  <div class="chat-app">
+    <aside class="chat-list">
+      <h2>📚 My Chats</h2>
+      <ul id="chatList"></ul>
+      <p id="listEmpty" class="muted" hidden>No conversations yet.</p>
+    </aside>
+
+    <section class="chat-main">
+      <header class="chat-head">
+        <button id="backBtn" class="back" aria-label="Back">←</button>
+        <div>
+          <h3 id="chatTitle">Select a conversation</h3>
+          <small id="chatSub" class="muted"></small>
+        </div>
+      </header>
+
+      <div id="messages" class="messages"></div>
+
+      <form id="sendForm" class="send-form" hidden>
+        <textarea id="msgInput" maxlength="1000" rows="1" placeholder="Write a message…"></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </div>
+  
+  <script src="js/chat.js"></script>
+  
+</body>
+</html>
